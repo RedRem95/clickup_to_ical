@@ -30,8 +30,6 @@ def main():
                 for l in lists[f.id].values():
                     print(f"      -> {l}: {len(get_tasks(lst=l.id, with_closed=True))} tasks")
 
-    # tasks = get_tasks(lst=901503108093)
-
 
 if __name__ == '__main__':
     main()
