@@ -18,7 +18,7 @@ pip install git+https://github.com/RedRem95/clickup_to_ical.git
 
 #### Docker
 ``` bash
-docker run -p 8080:8080 -e CLICKUP_API_KEY=YOUR_TOKEN_HERE -v /path/to/auth.json:/auth.json -v /path/to/default_event_length.json:/def_len.json clickup_to_ical
+docker run -d -p 8080:8080 -e CLICKUP_API_KEY=YOUR_TOKEN_HERE -v /path/to/auth.json:/auth.json -v /path/to/default_event_length.json:/def_len.json clickup_to_ical
 ```
 
 ## Executing program
@@ -28,6 +28,9 @@ docker run -p 8080:8080 -e CLICKUP_API_KEY=YOUR_TOKEN_HERE -v /path/to/auth.json
 * Run the explore script to get your user ids
 ``` bash
 Clickup_Explore # Run this inside the python environment with the installed package 
+```
+``` bash
+docker run --rm -e CLICKUP_API_KEY=YOUR_TOKEN_HERE clickup_to_ical Clickup_Explore 
 ```
 * Put the relevant user ids inside an auth.json file
 ``` json
@@ -47,6 +50,9 @@ Clickup_Explore # Run this inside the python environment with the installed pack
 * Run the web service providing the ical files that you can either download or subscribe with your calendar client of choice
 ``` bash
  Clickup_To_iCal # Run this inside the python environment with the installed package 
+```
+``` bash
+docker run -d -p 8080:8080 -e CLICKUP_API_KEY=YOUR_TOKEN_HERE -v /path/to/auth.json:/auth.json -v /path/to/default_event_length.json:/def_len.json clickup_to_ical
 ```
 
 ## Web-API

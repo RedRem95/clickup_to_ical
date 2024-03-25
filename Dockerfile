@@ -11,5 +11,8 @@ COPY clickup_to_ical/ /app/clickup_to_ical/
 WORKDIR /app
 RUN pip install .
 
+ENV AUTH_FILE="/auth.json"
+ENV DEFAULT_LENGTH="/def_len.json"
+
 ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["Clickup_To_iCal"]
