@@ -26,13 +26,13 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'Clickup_Explore = PAT.explore:main',
-            'PAT-Visualizer = PAT_Visualizer.host:main'
+            'Clickup_Explore = clickup_to_ical.explore:main',
+            'Clickup_To_iCal = clickup_to_ical.host:main'
         ],
     },
     packages=setuptools.find_packages(include=['clickup_to_ical', 'clickup_to_ical.*']),
     python_requires=">=3.7",
-    install_requires=["requests", "icalendar", "Flask", "requests-ratelimiter"],
+    install_requires=["requests", "ical", "Flask", "requests-ratelimiter", "markdown", "beautifulsoup4"],
     include_package_data=True,
     zip_safe=False,
 )

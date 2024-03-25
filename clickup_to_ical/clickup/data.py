@@ -1,5 +1,6 @@
-from typing import Optional, List as tList, Any
+from typing import Optional, List as tList, Any, Union, Dict
 from dataclasses import dataclass
+from datetime import datetime
 
 
 def _to_int(value: str) -> Optional[int]:
@@ -51,6 +52,9 @@ class Team:
             members=[Member.from_json(x["user"]) for x in json_data["members"]]
         )
 
+    def get_members(self) -> tList[Member]:
+        return self.members
+
 
 @dataclass(frozen=True)
 class Space:
@@ -58,34 +62,44 @@ class Space:
     name: str
     private: bool
     avatar: Optional[str]
+    team: Team
 
     def __str__(self):
         return f"{self.__class__.__name__}-{self.name} ({self.id})"
 
     @classmethod
-    def from_json(cls, json_data: dict) -> "Space":
+    def from_json(cls, json_data: dict, team: Team) -> "Space":
         return cls(
             id=json_data["id"],
             name=json_data["name"],
             private=json_data["private"],
-            avatar=json_data["avatar"]
+            avatar=json_data["avatar"],
+            team=team
         )
+
+    def get_members(self) -> tList[Member]:
+        return self.team.get_members()
 
 
 @dataclass(frozen=True)
 class Folder:
     id: int
     name: str
+    space: Space
 
     def __str__(self):
         return f"{self.__class__.__name__}-{self.name} ({self.id})"
 
     @classmethod
-    def from_json(cls, json_data: dict) -> "Folder":
+    def from_json(cls, json_data: dict, space: Space) -> "Folder":
         return cls(
             id=json_data["id"],
             name=json_data["name"],
+            space=space,
         )
+
+    def get_members(self) -> tList[Member]:
+        return self.space.get_members()
 
 
 @dataclass(frozen=True)
@@ -94,18 +108,23 @@ class List:
     name: str
     content: str
     task_count: Optional[int]
+    origin: Union[Folder, Space]
 
     def __str__(self):
         return f"{self.__class__.__name__}-{self.name} ({self.id})"
 
     @classmethod
-    def from_json(cls, json_data: dict) -> "List":
+    def from_json(cls, json_data: dict, origin: Union[Folder, Space]) -> "List":
         return cls(
             id=json_data["id"],
             name=json_data["name"],
             content=json_data.get("content", ""),
-            task_count=json_data["task_count"]
+            task_count=json_data["task_count"],
+            origin=origin,
         )
+
+    def get_members(self) -> tList[Member]:
+        return self.origin.get_members()
 
 
 @dataclass(frozen=True)
@@ -140,12 +159,34 @@ class Task:
     start_date: Optional[int]
     custom_fields: tList[CustomField]
     markdown_description: Optional[str]
+    lst: List
+    assignees: tList[int]
+    creator: Optional[int]
+    priority: int
+    url: str
+
+    def get_assignees(self) -> tList[Member]:
+        return [x for x in self.get_members() if x.id in self.assignees]
+
+    def get_all_dates(self) -> Dict[str, datetime]:
+        ret = {}
+        if self.due_date is not None:
+            ret["Due Date"] = datetime.utcfromtimestamp(float(self.due_date)/1000)
+        if self.start_date is not None:
+            ret["Start Date"] = datetime.utcfromtimestamp(float(self.start_date)/1000)
+        for custom_field in self.custom_fields:
+            if custom_field.type == "date" and custom_field.value is not None:
+                ret[f"__{custom_field.name}"] = datetime.utcfromtimestamp(float(custom_field.value)/1000)
+        return ret
+
+    def get_members(self) -> tList[Member]:
+        return self.lst.get_members()
 
     def __str__(self):
         return f"{self.__class__.__name__}-{self.name} ({self.id})"
 
     @classmethod
-    def from_json(cls, json_data: dict) -> "Task":
+    def from_json(cls, json_data: dict, lst: List) -> "Task":
         return cls(
             id=json_data["id"],
             name=json_data["name"],
@@ -155,4 +196,9 @@ class Task:
             start_date=_to_int(json_data["start_date"]),
             custom_fields=[CustomField.from_json(x) for x in json_data["custom_fields"]],
             markdown_description=json_data["markdown_description"],
+            lst=lst,
+            assignees=[int(x["id"]) for x in json_data["assignees"]],
+            creator=json_data.get("creator", {}).get("id", None),
+            priority=json_data["priority"].get("id", None) if json_data["priority"] is not None else None,
+            url=json_data["url"],
         )
