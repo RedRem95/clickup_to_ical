@@ -30,7 +30,7 @@ docker run -d -p 8080:8080 -e CLICKUP_API_KEY=YOUR_TOKEN_HERE -v /path/to/auth.j
 Clickup_Explore # Run this inside the python environment with the installed package 
 ```
 ``` bash
-docker run --rm -e CLICKUP_API_KEY=YOUR_TOKEN_HERE clickup_to_ical Clickup_Explore 
+docker run --rm -e CLICKUP_API_KEY=YOUR_TOKEN_HERE ghcr.io/redrem95/clickup_to_ical Clickup_Explore 
 ```
 * Put the relevant user ids inside an auth.json file
 ``` json
@@ -52,7 +52,7 @@ docker run --rm -e CLICKUP_API_KEY=YOUR_TOKEN_HERE clickup_to_ical Clickup_Explo
  Clickup_To_iCal # Run this inside the python environment with the installed package 
 ```
 ``` bash
-docker run -d -p 8080:8080 -e CLICKUP_API_KEY=YOUR_TOKEN_HERE -v /path/to/auth.json:/auth.json -v /path/to/default_event_length.json:/def_len.json clickup_to_ical
+docker run -d -p 8080:8080 -e CLICKUP_API_KEY=YOUR_TOKEN_HERE -v /path/to/auth.json:/auth.json -v /path/to/default_event_length.json:/def_len.json ghcr.io/redrem95/clickup_to_ical
 ```
 
 ## Web-API
