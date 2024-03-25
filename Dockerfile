@@ -13,6 +13,7 @@ RUN pip install .
 
 ENV AUTH_FILE="/auth.json"
 ENV DEFAULT_LENGTH="/def_len.json"
+ENV FLASK_PORT="8080"
 
 ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["Clickup_To_iCal"]

@@ -103,6 +103,7 @@ To Save API calls the service only pulls the Clickup API every 15 Minutes. This 
   - [x] Associate token with user id
   - [ ] More flexibility in tokens and user ids
 - [ ] More filters. WAY more filters
+- [ ] Move to better server (away from flask def server)
 
 
 

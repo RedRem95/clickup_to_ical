@@ -14,7 +14,7 @@ def main():
         level=logging.DEBUG if debug_enabled else logging.INFO
     )
 
-    app.run(port=os.environ.get("FLASK_PORT", 8080), debug=debug_enabled)
+    app.run(host="0.0.0.0", port=os.environ.get("FLASK_PORT", 8080), debug=debug_enabled)
 
 
 if __name__ == '__main__':
