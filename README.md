@@ -1,3 +1,8 @@
+![GitHub Tag](https://img.shields.io/github/v/tag/redrem95/clickup_to_ical)
+![GitHub License](https://img.shields.io/github/license/redrem95/clickup_to_ical)
+[![Docker](https://github.com/RedRem95/clickup_to_ical/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/RedRem95/clickup_to_ical/actions/workflows/docker-publish.yml)
+
+
 # Clickup to iCal
 
 A simple webservice that pulls clickup tasks and publishes dates associated with the tasks as iCal events.
