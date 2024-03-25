@@ -9,7 +9,7 @@ A simple webservice that pulls clickup tasks and publishes dates associated with
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+This project aims to host a simple web server provides ical calendars generated from Clickup tasks you are assigned to
 
 ## Getting Started
 
