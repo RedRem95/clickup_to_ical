@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 from typing import List as tList, Union
 
 from requests import Response
@@ -64,6 +64,8 @@ def get_tasks(lst: List, with_subtasks: bool = False, with_closed: bool = False)
         if d["last_page"]:
             break
         page += 1
+    for t in tasks:
+        t.update(other_tasks=tasks)
     return tasks
 
 

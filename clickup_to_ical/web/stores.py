@@ -4,7 +4,6 @@ from logging import getLogger
 from clickup_to_ical.host import TRUE_VALUES
 from clickup_to_ical.web.utils import ThreadingDict
 
-
 _LOGGER = getLogger("clickup_to_ical")
 
 
@@ -34,14 +33,18 @@ default_event_length = ThreadingDict(auto_update=(_update_default_length, 60 * 5
 
 
 def _update_tasks():
+    from time import perf_counter
+    from datetime import timedelta
     from clickup_to_ical.clickup import get_tasks_all
     from collections import defaultdict
     _LOGGER.info("Updating tasks")
+    t1 = perf_counter()
     _tasks = get_tasks_all(
         with_closed=os.environ.get("TASKS_CLOSED", "") in TRUE_VALUES,
         with_subtasks=os.environ.get("TASKS_SUBTASKS", "") in TRUE_VALUES,
     )
-    _LOGGER.info(f"Found {len(_tasks)} tasks")
+    t2 = perf_counter()
+    _LOGGER.info(f"Found {len(_tasks)} tasks in {timedelta(seconds=t2 - t1)}")
     d = defaultdict(list)
     for _task in _tasks:
         d[None].append(_task)

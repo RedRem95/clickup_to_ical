@@ -1,6 +1,7 @@
-from typing import Optional, List as tList, Any, Union, Dict
+import os
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional, List as tList, Any, Union, Dict
 
 
 def _to_int(value: str) -> Optional[int]:
@@ -149,7 +150,8 @@ class CustomField:
         )
 
 
-@dataclass(frozen=True)
+# @dataclass(frozen=True) # TODO: Find better way to have frozen dataclass and be able to have parents as Task type
+@dataclass
 class Task:
     id: str
     name: str
@@ -164,6 +166,8 @@ class Task:
     creator: Optional[int]
     priority: int
     url: str
+    parent: Union[None, str, "Task"]
+    status: dict
 
     def get_assignees(self) -> tList[Member]:
         return [x for x in self.get_members() if x.id in self.assignees]
@@ -183,7 +187,23 @@ class Task:
         return self.lst.get_members()
 
     def __str__(self):
-        return f"{self.__class__.__name__}-{self.name} ({self.id})"
+        return f"{self.__class__.__name__}-{self.get_name()} ({self.id})"
+
+    def get_name(self) -> str:
+        if self.parent is None:
+            return self.name
+        return (f"{self.parent.get_name() if isinstance(self.parent, Task) else self.parent} "
+                f"{os.environ.get('SUBTASK_CONNECTION_SYMBOL', '📥')} "
+                f"{self.name}")
+
+    def update(self, other_tasks: tList["Task"]):
+        if isinstance(self.parent, str):
+            for t in other_tasks:
+                if t.id == self.parent:
+                    self.parent = t
+
+    def is_open(self) -> bool:
+        return not self.status.get("type", "open").lower() == "closed"
 
     @classmethod
     def from_json(cls, json_data: dict, lst: List) -> "Task":
@@ -201,4 +221,6 @@ class Task:
             creator=json_data.get("creator", {}).get("id", None),
             priority=json_data["priority"].get("id", None) if json_data["priority"] is not None else None,
             url=json_data["url"],
+            parent=json_data.get("parent", None),
+            status=json_data.get("status", {})
         )
