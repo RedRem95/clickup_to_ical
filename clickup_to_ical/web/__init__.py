@@ -47,10 +47,10 @@ def get_calendar():
 
     if request.args.get("only_assigned", "true").lower() in TRUE_VALUES:
         log["assignees"] = clickup_user_id
-        assigned_tasks = tasks[clickup_user_id]
+        assigned_tasks = tasks.get(clickup_user_id, [])
     else:
         log["assignees"] = "all"
-        assigned_tasks = tasks[None]
+        assigned_tasks = tasks.get(None, [])
 
     include_closed = request.args.get("include_closed", "false") in TRUE_VALUES
     log["closed included"] = include_closed
