@@ -1,7 +1,7 @@
 import threading
 import time
-from typing import Tuple, Callable
 from threading import Lock
+from typing import Tuple, Callable
 
 
 class ThreadingDict:
@@ -11,6 +11,7 @@ class ThreadingDict:
         if auto_update is not None:
             fn = auto_update[0]
             freq = auto_update[1]
+            self._freq = freq
 
             def _tmp():
                 while True:
@@ -20,6 +21,12 @@ class ThreadingDict:
                     time.sleep(freq)
 
             threading.Thread(target=_tmp, daemon=True).start()
+        else:
+            self._freq = None
+
+    @property
+    def frequency(self) -> int:
+        return self._freq
 
     def set(self, data: dict):
         with self._lock:

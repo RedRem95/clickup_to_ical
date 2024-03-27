@@ -61,6 +61,7 @@ def get_calendar():
         prodid=f'-//CLICKUP-TO-ICAL-CONVERTER//github.com/RedRem95/clickup_to_ical//{__version__}//',
         calendar_name="ClickupToIcal Calendar",
         calendar_description="ClickupToIcal Calendar\n{}".format("\n".join(f"{x}: {y}" for x, y in log.items())),
+        calendar_ttl=None if tasks.frequency is None else timedelta(seconds=tasks.frequency)
     )
 
     for task in (x for x in assigned_tasks if (include_closed or x.is_open())):

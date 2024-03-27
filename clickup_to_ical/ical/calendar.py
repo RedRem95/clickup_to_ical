@@ -11,7 +11,12 @@ def _time_to_duration(td: timedelta) -> str:
     days = td.days
     hours, remainder = divmod(td.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    return f"P{days if days > 0 else ''}T{f'{hours}H' if hours > 0 else ''}{f'{minutes}M' if minutes > 0 else ''}{f'{seconds}S' if seconds > 0 else ''}"
+
+    h = f"{f'{hours:02d}H' if hours > 0 else ''}"
+    m = f"{f'{minutes:02d}M' if minutes > 0 else ''}"
+    s = f"{f'{seconds:02d}S' if seconds > 0 else ''}"
+
+    return f"P{days if days > 0 else ''}T{h}{m}{s}"
 
 
 @dataclass(frozen=True)
