@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List as tList, Any, Union, Dict
 
 
@@ -175,12 +175,13 @@ class Task:
     def get_all_dates(self) -> Dict[str, datetime]:
         ret = {}
         if self.due_date is not None:
-            ret["Due Date"] = datetime.utcfromtimestamp(float(self.due_date)/1000)
+            ret["Due Date"] = datetime.fromtimestamp(float(self.due_date) / 1000, tz=timezone.utc)
         if self.start_date is not None:
-            ret["Start Date"] = datetime.utcfromtimestamp(float(self.start_date)/1000)
+            ret["Start Date"] = datetime.fromtimestamp(float(self.start_date) / 1000, tz=timezone.utc)
         for custom_field in self.custom_fields:
             if custom_field.type == "date" and custom_field.value is not None:
-                ret[f"__{custom_field.name}"] = datetime.utcfromtimestamp(float(custom_field.value)/1000)
+                ret[f"__{custom_field.name}"] = datetime.fromtimestamp(float(custom_field.value) / 1000,
+                                                                       tz=timezone.utc)
         return ret
 
     def get_members(self) -> tList[Member]:
