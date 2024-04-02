@@ -44,6 +44,7 @@ class Event:
     attendees: List[User] = field(default_factory=list)
 
     def __str__(self):
+        from clickup_to_ical.ical.calendar import escape_nl
         ret = [
             f"UID:{self.uid}",
             _datetime_to_str("DTSTAMP", self.dtstamp),
@@ -59,21 +60,21 @@ class Event:
         if self.url is not None:
             ret.append(f"URL:{self.url}")
         if self.location is not None:
-            ret.append(f"LOCATION:{self.location}")
+            ret.append(f"LOCATION:{escape_nl(self.location)}")
         if self.summary is not None:
-            ret.append(f"SUMMARY:{self.summary}")
+            ret.append(f"SUMMARY:{escape_nl(self.summary)}")
         if self.description is not None:
-            ret.append(f"DESCRIPTION:{self.description}")
+            ret.append(f"DESCRIPTION:{escape_nl(self.description)}")
         if self.sequence is not None:
-            ret.append(f"SEQUENCE:{self.sequence}")
+            ret.append(f"SEQUENCE:{escape_nl(self.sequence)}")
         if self.transp is not None:
-            ret.append(f"TRANSP:{self.transp}")
+            ret.append(f"TRANSP:{escape_nl(self.transp)}")
         if self.status is not None:
-            ret.append(f"STATUS:{self.status}")
+            ret.append(f"STATUS:{escape_nl(self.status)}")
         if self.priority is not None:
-            ret.append(f"PRIORITY:{self.priority}")
+            ret.append(f"PRIORITY:{escape_nl(self.priority)}")
         if self.organizer is not None:
-            ret.append(self.organizer.__str__(user_type="ORGANIZER"))
-        ret.extend(x.__str__(user_type="ATTENDEE") for x in self.attendees)
+            ret.append(escape_nl(self.organizer.__str__(user_type="ORGANIZER")))
+        ret.extend(escape_nl(x.__str__(user_type="ATTENDEE")) for x in self.attendees)
 
         return "BEGIN:VEVENT\n{}\nEND:VEVENT".format("\n".join(ret))
