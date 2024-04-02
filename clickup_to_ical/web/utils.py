@@ -1,12 +1,14 @@
 import threading
 import time
-from threading import Lock
+from logging import getLogger
 from typing import Tuple, Callable
+
+_LOGGER = getLogger("clickup_to_ical")
 
 
 class ThreadingDict:
     def __init__(self, auto_update: Tuple[Callable[[], dict], int] = None):
-        self._lock = Lock()
+        self._lock = threading.Lock()
         self._data = {}
         if auto_update is not None:
             fn = auto_update[0]
@@ -15,9 +17,12 @@ class ThreadingDict:
 
             def _tmp():
                 while True:
-                    _v = fn()
-                    if _v is not None:
-                        self.set(_v)
+                    try:
+                        _v = fn()
+                        if _v is not None:
+                            self.set(_v)
+                    except Exception as e:
+                        _LOGGER.exception("Failed to update", e)
                     time.sleep(freq)
 
             threading.Thread(target=_tmp, daemon=True).start()

@@ -11,7 +11,7 @@ def _update_auth():
     import json
     if "AUTH_FILE" in os.environ:
         with open(os.environ["AUTH_FILE"], "r") as f_in:
-            _LOGGER.info("Read new auth file")
+            _LOGGER.debug("Read new auth file")
             return json.load(f_in)
     return None
 
@@ -23,7 +23,7 @@ def _update_default_length():
     import json
     if "DEFAULT_LENGTH" in os.environ:
         with open(os.environ["DEFAULT_LENGTH"], "r") as f_in:
-            _LOGGER.info("Read new default length for events file")
+            _LOGGER.debug("Read new default length for events file")
             return json.load(f_in)
     else:
         return {}
@@ -37,7 +37,7 @@ def _update_tasks():
     from datetime import timedelta
     from clickup_to_ical.clickup import get_tasks_all
     from collections import defaultdict
-    _LOGGER.info("Updating tasks")
+    _LOGGER.debug("Updating tasks")
     t1 = perf_counter()
     _tasks = get_tasks_all(
         with_closed=os.environ.get("TASKS_CLOSED", "") in TRUE_VALUES,
