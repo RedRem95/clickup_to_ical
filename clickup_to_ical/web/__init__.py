@@ -54,6 +54,8 @@ def get_calendar():
 
     include_closed = request.args.get("include_closed", "false") in TRUE_VALUES
     log["closed included"] = include_closed
+    fixed_uid = request.args.get("fixed_uid", "false") in TRUE_VALUES
+    log["fixed uid"] = fixed_uid
 
     _LOGGER.info(f"Request from {request_from}: <{'; '.join(f'{x}: {y}' for x, y in log.items())}>")
     calendar = Calendar(
@@ -91,8 +93,9 @@ def get_calendar():
 
         for dt_name, dt in ((x, y) for x, y in task.get_all_dates().items() if date_type_filter(_dt_name=x)):
             real_name = dt_name[2 if dt_name.startswith('__') else 0:]
+            uid = uuid.uuid3(uuid.NAMESPACE_X500, f"{task.id}-{dt_name}") if fixed_uid else uuid.uuid4()
             event = Event(
-                uid=str(uuid.uuid3(uuid.NAMESPACE_X500, f"{task.id}-{dt_name}")),
+                uid=str(uid),
                 dtstamp=datetime.fromtimestamp(float(task.date_created) / 1000, tz=pytz.UTC),
                 url=task.url,
                 summary=f"{task.get_name()} - {real_name}",
