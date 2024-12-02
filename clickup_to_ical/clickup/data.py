@@ -29,7 +29,19 @@ class Member:
 
     @classmethod
     def from_json(cls, json_data: dict) -> "Member":
-        return cls(**json_data)
+        return cls(
+            id=_to_int(json_data.get("id")),
+            username=json_data.get("username"),
+            email=json_data.get("email"),
+            color=json_data.get("color"),
+            profilePicture=json_data.get("profilePicture"),
+            initials=json_data.get("initials"),
+            role=_to_int(json_data.get("role")),
+            custom_role=json_data.get("custom_role"),
+            last_active=json_data.get("last_active"),
+            date_joined=json_data.get("date_joined"),
+            date_invited=json_data.get("date_invited"),
+        )
 
 
 @dataclass(frozen=True)
